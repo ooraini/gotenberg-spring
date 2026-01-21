@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.*;
 
 /// Spring HTTP Interface for Gotenberg API.
 /// Reference: <a href="https://gotenberg.dev/docs/routes">Routes</a>
+@SuppressWarnings("unused")
 @HttpExchange(accept = APPLICATION_PDF_VALUE)
 public interface GotenbergClient {
 
