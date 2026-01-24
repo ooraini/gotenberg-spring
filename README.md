@@ -16,7 +16,8 @@ Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>io.github.ooraini</groupId>    <artifactId>gotenberg-spring</artifactId>
+    <groupId>io.github.ooraini</groupId>    
+    <artifactId>gotenberg-spring</artifactId>
     <version>0.1</version>
 </dependency>
 ```
