@@ -134,6 +134,13 @@ services:
       - "3000"
 ```
 
+## Releasing
+- `./gradlew release -PreleaseType=minor`
+- `git checkout <latest>`
+- `./gradlew publishToMavenCentral`
+- Publish release in https://central.sonatype.com
+- Create release in Github
+
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE).
