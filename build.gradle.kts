@@ -1,6 +1,8 @@
 plugins {
     id("java-library")
     id("com.vanniktech.maven.publish") version "0.36.0"
+    id("io.github.simonhauck.release") version "1.5.0"
+
 }
 
 java {
@@ -47,4 +49,7 @@ tasks.withType<JavaCompile> {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+release {
 }
