@@ -120,6 +120,19 @@ ResponseEntity<InputStream> pdf = client.convertLibreOffice(
 );
 ```
 
+
+## Spring Docker Compose Support
+
+If you are using `spring-boot-docker-compose` a `ConnectionDetails` object will be automaticlly regisetered and used by the AutoConfiguration:
+
+```yaml
+services:
+  gotenberg:
+    image: gotenberg/gotenberg:latest
+    ports:
+      - "3000"
+```
+
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE).
