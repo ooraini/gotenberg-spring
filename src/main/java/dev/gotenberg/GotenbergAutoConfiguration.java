@@ -1,6 +1,7 @@
 package dev.gotenberg;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,15 +14,22 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 
 @AutoConfiguration(after = RestClientAutoConfiguration.class)
-@EnableConfigurationProperties(GotenbergProperties.class)
 @ConditionalOnClass(RestClient.class)
-@ConditionalOnProperty("gotenberg.base-url")
+@EnableConfigurationProperties(GotenbergProperties.class)
 class GotenbergAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean(GotenbergConnectionDetails.class)
+    @ConditionalOnProperty("gotenberg.base-url")
+    PropertiesGotenbergConnectionDetails gotenbergConnectionDetails(GotenbergProperties gotenbergProperties) {
+        return new PropertiesGotenbergConnectionDetails(gotenbergProperties.baseUrl());
+    }
+
+    @Bean
+    @ConditionalOnBean(GotenbergConnectionDetails.class)
     @ConditionalOnMissingBean
-    GotenbergClient gotenbergClient(RestClient.Builder builder, GotenbergProperties properties) {
-        RestClient restClient = builder.baseUrl(properties.baseUrl()).build();
+    GotenbergClient gotenbergClient(RestClient.Builder builder, GotenbergConnectionDetails gotenbergConnectionDetails) {
+        RestClient restClient = builder.baseUrl(gotenbergConnectionDetails.baseUrl()).build();
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build();
         return factory.createClient(GotenbergClient.class);
     }

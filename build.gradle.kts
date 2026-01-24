@@ -22,6 +22,7 @@ dependencies {
     compileOnly("org.springframework:spring-web")
     compileOnly("org.springframework:spring-context")
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
+    compileOnly("org.springframework.boot:spring-boot-docker-compose")
     compileOnly("org.springframework.boot:spring-boot-starter-restclient")
 
     annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
