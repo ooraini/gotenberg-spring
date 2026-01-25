@@ -102,6 +102,7 @@ public interface GotenbergClient {
     //endregion
 
 
+    //region PDF Merge
     static PdfMergeOptions pdfMergeOptions() {
         return new PdfMergeOptions(null);
     }
@@ -112,6 +113,7 @@ public interface GotenbergClient {
 
     @PostExchange(url = "/forms/pdfengines/merge", contentType = MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<InputStream> pdfMerge(@RequestPart MultiValueMap<String, Object> body);
+    //endregion
 
     @PostExchange(url = "/forms/pdfengines/convert", contentType = MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<InputStream> convertPdf(@RequestPart MultiValueMap<String, Object> body);
