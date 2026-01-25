@@ -102,16 +102,22 @@ public interface GotenbergClient {
     //endregion
 
 
-    //region PDF Engines
+    static PdfMergeOptions pdfMergeOptions() {
+        return new PdfMergeOptions(null);
+    }
+
+    default ResponseEntity<InputStream> pdfMerge(PdfMergeOptions options) {
+        return pdfMerge(options.form);
+    }
+
     @PostExchange(url = "/forms/pdfengines/merge", contentType = MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<InputStream> merge(@RequestPart MultiValueMap<String, Object> body);
+    ResponseEntity<InputStream> pdfMerge(@RequestPart MultiValueMap<String, Object> body);
 
     @PostExchange(url = "/forms/pdfengines/convert", contentType = MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<InputStream> convertPdf(@RequestPart MultiValueMap<String, Object> body);
 
     @PostExchange(url = "/forms/pdfengines/metadata", contentType = MULTIPART_FORM_DATA_VALUE, accept = APPLICATION_JSON_VALUE)
     ResponseEntity<String> getMetadata(@RequestPart MultiValueMap<String, Object> body);
-    //endregion
 
 
     //region Models
@@ -518,21 +524,21 @@ public interface GotenbergClient {
         }
 
         /**
-         * Flatten the PDF.
+         * Flatten the resulting PDF.
          */
         public ChromiumConvertOptions flatten(Boolean flatten) {
             return add("flatten", flatten);
         }
 
         /**
-         * The user password to open the resulting PDF.
+         * Password for opening the resulting PDF(s).
          */
         public ChromiumConvertOptions userPassword(String userPassword) {
             return add("userPassword", userPassword);
         }
 
         /**
-         * The owner password to protect the resulting PDF.
+         * Password for full access on the resulting PDF(s).
          */
         public ChromiumConvertOptions ownerPassword(String ownerPassword) {
             return add("ownerPassword", ownerPassword);
@@ -643,7 +649,7 @@ public interface GotenbergClient {
         }
 
         /**
-         * Enable PDF/UA (Universal Accessibility) compliance.
+         * Enable PDF for Universal Access for optimal accessibility.
          */
         public LibreOfficeOptions pdfua(Boolean pdfua) {
             return add("pdfua", pdfua);
@@ -694,6 +700,62 @@ public interface GotenbergClient {
 
         public LibreOfficeOptions splitUnify(Boolean unify) {
             return add("splitUnify", unify);
+        }
+    }
+
+    class PdfMergeOptions implements Options<PdfMergeOptions> {
+        final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+
+        PdfMergeOptions(@Nullable PdfMergeOptions copy) {
+            if (copy != null) form.putAll(copy.form);
+        }
+
+        @Override
+        public PdfMergeOptions add(String key, Object value) {
+            form.add(key, value);
+            return this;
+        }
+
+        /**
+         * Convert the resulting PDF into the given PDF/A format.
+         */
+        public PdfMergeOptions pdfa(PdfAFormat pdfa) {
+            return add("pdfa", pdfa.getValue());
+        }
+
+        /**
+         * Enable PDF for Universal Access for optimal accessibility.
+         */
+        public PdfMergeOptions pdfua(Boolean pdfua) {
+            return add("pdfua", pdfua);
+        }
+
+        /**
+         * The metadata to write into the PDF (JSON format).
+         */
+        public PdfMergeOptions metadata(String metadata) {
+            return add("metadata", metadata);
+        }
+
+        /**
+         * Flatten the resulting PDF.
+         */
+        public PdfMergeOptions flatten(Boolean flatten) {
+            return add("flatten", flatten);
+        }
+
+        /**
+         * Password for opening the resulting PDF(s).
+         */
+        public PdfMergeOptions userPassword(String userPassword) {
+            return add("userPassword", userPassword);
+        }
+
+        /**
+         * Password for full access on the resulting PDF(s).
+         */
+        public PdfMergeOptions ownerPassword(String ownerPassword) {
+            return add("ownerPassword", ownerPassword);
         }
     }
     //endregion
