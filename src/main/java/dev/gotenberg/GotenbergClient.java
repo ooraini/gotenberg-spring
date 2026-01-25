@@ -3,7 +3,6 @@ package dev.gotenberg;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -171,7 +170,6 @@ public interface GotenbergClient {
 
 
     interface Options<O extends Options<O>> {
-        void fill(MultiValueMap<String, Object> map);
         O add(String key, Object value);
 
         default O addFile(String filename, String content) {
@@ -191,23 +189,6 @@ public interface GotenbergClient {
         }
     }
 
-    record Encryption(
-            String userPassword, String ownerPassword
-    ) {
-        public void fill(MultiValueMap<String, Object> map) {
-            if (userPassword != null) map.add("userPassword", userPassword);
-            if (ownerPassword != null) map.add("ownerPassword", ownerPassword);
-        }
-
-        public Encryption userPassword(String userPassword) {
-            return new Encryption(userPassword, this.ownerPassword);
-        }
-
-        public Encryption ownerPassword(String ownerPassword) {
-            return new Encryption(this.userPassword, ownerPassword);
-        }
-    }
-
     class ChromiumScreenshotOptions implements Options<ChromiumScreenshotOptions> {
         final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
 
@@ -215,9 +196,6 @@ public interface GotenbergClient {
             if (copy != null) form.putAll(copy.form);
         }
 
-        public void fill(MultiValueMap<String, Object> map) {
-            this.form.forEach(map::add);
-        }
         public ChromiumScreenshotOptions add(String key, Object value) {
             form.add(key, value);
             return this;
@@ -363,16 +341,9 @@ public interface GotenbergClient {
             if (copy != null) form.putAll(copy.form);
         }
 
-        public void fill(MultiValueMap<String, Object> map) {
-            this.form.forEach(map::add);
-        }
         public ChromiumConvertOptions add(String key, Object value) {
             form.add(key, value);
             return this;
-        }
-
-        public void fill(MultipartBodyBuilder builder) {
-            form.forEach(builder::part);
         }
 
         /**
@@ -551,14 +522,17 @@ public interface GotenbergClient {
         }
 
         /**
-         * The encryption settings to protect the resulting PDF.
+         * The user password to open the resulting PDF.
          */
-        public ChromiumConvertOptions encryption(Encryption encryption) {
-            if (encryption != null) {
-                if (encryption.userPassword != null) form.add("userPassword", encryption.userPassword);
-                if (encryption.ownerPassword != null) form.add("ownerPassword", encryption.ownerPassword);
-            }
-            return this;
+        public ChromiumConvertOptions userPassword(String userPassword) {
+            return add("userPassword", userPassword);
+        }
+
+        /**
+         * The owner password to protect the resulting PDF.
+         */
+        public ChromiumConvertOptions ownerPassword(String ownerPassword) {
+            return add("ownerPassword", ownerPassword);
         }
 
         /**
@@ -631,14 +605,6 @@ public interface GotenbergClient {
     class LibreOfficeOptions implements Options<LibreOfficeOptions> {
         final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
 
-        public static LibreOfficeOptions of() {
-            return new LibreOfficeOptions();
-        }
-
-        public void fill(MultiValueMap<String, Object> map) {
-            this.form.forEach(map::add);
-        }
-
         @Override
         public LibreOfficeOptions add(String key, Object value) {
             form.add(key, value);
@@ -695,14 +661,17 @@ public interface GotenbergClient {
         }
 
         /**
-         * The encryption settings to protect the resulting PDF.
+         * The user password to open the resulting PDF.
          */
-        public LibreOfficeOptions encryption(Encryption encryption) {
-            if (encryption != null) {
-                if (encryption.userPassword != null) form.add("userPassword", encryption.userPassword);
-                if (encryption.ownerPassword != null) form.add("ownerPassword", encryption.ownerPassword);
-            }
-            return this;
+        public LibreOfficeOptions userPassword(String userPassword) {
+            return add("userPassword", userPassword);
+        }
+
+        /**
+         * The owner password to protect the resulting PDF.
+         */
+        public LibreOfficeOptions ownerPassword(String ownerPassword) {
+            return add("ownerPassword", ownerPassword);
         }
 
         public LibreOfficeOptions embeds(List<Resource> embedFiles) {
