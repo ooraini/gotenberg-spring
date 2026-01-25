@@ -23,17 +23,11 @@ class ChromiumConvertHtmlTest extends GotenbergContainerTest {
             <body><h1>Hello Gotenberg</h1></body>
             </html>
             """;
-        var htmlResource = new ByteArrayResource(html.getBytes(StandardCharsets.UTF_8)) {
-            @Override
-            public String getFilename() {
-                return "index.html";
-            }
-        };
 
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertHtml(htmlResource, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertHtml(html.getBytes(StandardCharsets.UTF_8), chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());
@@ -59,17 +53,10 @@ class ChromiumConvertHtmlTest extends GotenbergContainerTest {
             <body><h1>Styled Content</h1></body>
             </html>
             """;
-        var htmlResource = new ByteArrayResource(html.getBytes(StandardCharsets.UTF_8)) {
-            @Override
-            public String getFilename() {
-                return "index.html";
-            }
-        };
-        
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertHtml(htmlResource, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertHtml(html.getBytes(StandardCharsets.UTF_8), chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());

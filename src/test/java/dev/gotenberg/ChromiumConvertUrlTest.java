@@ -18,7 +18,7 @@ class ChromiumConvertUrlTest extends GotenbergContainerTest {
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());
@@ -38,7 +38,7 @@ class ChromiumConvertUrlTest extends GotenbergContainerTest {
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());
@@ -52,7 +52,7 @@ class ChromiumConvertUrlTest extends GotenbergContainerTest {
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());
@@ -66,7 +66,7 @@ class ChromiumConvertUrlTest extends GotenbergContainerTest {
         var chromiumOptions = GotenbergClient.chromiumConvertOptions();
 
         // Act
-        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions, null);
+        ResponseEntity<InputStream> response = gotenbergClient.convertUrl(url, chromiumOptions);
 
         // Assert
         assertEquals(200, response.getStatusCode().value());
