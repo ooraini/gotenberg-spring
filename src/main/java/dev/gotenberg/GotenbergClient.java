@@ -22,6 +22,7 @@ import static org.springframework.http.MediaType.*;
 @HttpExchange(accept = APPLICATION_PDF_VALUE)
 public interface GotenbergClient {
     //region Chromium Convert
+
     static ChromiumConvertOptions chromiumConvertOptions() {
         return new ChromiumConvertOptions(null);
     }
@@ -54,6 +55,7 @@ public interface GotenbergClient {
 
 
     //region Chromium Screenshot
+
     static ChromiumScreenshotOptions chromiumScreenshotOptions() {
         return new ChromiumScreenshotOptions(null);
     }
@@ -86,6 +88,7 @@ public interface GotenbergClient {
 
 
     //region Libre Office Convert
+
     static LibreOfficeOptions libreOfficeOptions() {
         return new LibreOfficeOptions();
     }
