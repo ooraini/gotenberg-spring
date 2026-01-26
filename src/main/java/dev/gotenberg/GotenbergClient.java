@@ -623,10 +623,10 @@ public interface GotenbergClient {
         }
 
         /**
-         * If more than one file is provided, merge them into one PDF.
+         * Set the password for opening the source file.
          */
-        public LibreOfficeOptions merge(Boolean merge) {
-            return add("merge", merge);
+        public LibreOfficeOptions password(String password) {
+            return add("password", password);
         }
 
         /**
@@ -636,12 +636,179 @@ public interface GotenbergClient {
             return add("landscape", landscape);
         }
 
+
         /**
-         * Page ranges to print, e.g., <pre>1-5, 8, 11-13</pre>. Empty means all pages.
+         * Page ranges to print, e.g., '1-4' - empty means all pages.
          */
-        public LibreOfficeOptions pageRanges(String pageRanges) {
-            return add("pageRanges", pageRanges);
+        public LibreOfficeOptions nativePageRanges(String nativePageRanges) {
+            return add("nativePageRanges", nativePageRanges);
         }
+
+        /**
+         * Specify whether to update the indexes before conversion, keeping in mind that doing so might result in missing links in the final PDF.
+         */
+        public LibreOfficeOptions updateIndexes(Boolean updateIndexes) {
+            return add("updateIndexes", updateIndexes);
+        }
+
+
+        /**
+         * Specify whether form fields are exported as widgets or only their fixed print representation is exported.
+         */
+        public LibreOfficeOptions exportFormFields(Boolean exportFormFields) {
+            return add("exportFormFields", exportFormFields);
+        }
+
+        /**
+         * Specify whether multiple form fields exported are allowed to have the same field name.
+         */
+        public LibreOfficeOptions allowDuplicateFieldNames(Boolean allowDuplicateFieldNames) {
+            return add("allowDuplicateFieldNames", allowDuplicateFieldNames);
+        }
+
+        /**
+         * Specify if bookmarks are exported to PDF.
+         */
+        public LibreOfficeOptions exportBookmarks(Boolean exportBookmarks) {
+            return add("exportBookmarks", exportBookmarks);
+        }
+
+        /**
+         * Specify that the bookmarks contained in the source LibreOffice file should be exported to the PDF file as Named Destination.
+         */
+        public LibreOfficeOptions exportBookmarksToPdfDestination(Boolean exportBookmarksToPdfDestination) {
+            return add("exportBookmarksToPdfDestination", exportBookmarksToPdfDestination);
+        }
+
+        /**
+         * Export the placeholders fields visual markings only. The exported placeholder is ineffective.
+         */
+        public LibreOfficeOptions exportPlaceholders(Boolean exportPlaceholders) {
+            return add("exportPlaceholders", exportPlaceholders);
+        }
+
+        /**
+         * Specify if notes are exported to PDF.
+         */
+        public LibreOfficeOptions exportNotes(Boolean exportNotes) {
+            return add("exportNotes", exportNotes);
+        }
+
+        /**
+         * Specify if notes pages are exported to PDF. Notes pages are available in Impress documents only.
+         */
+        public LibreOfficeOptions exportNotesPages(Boolean exportNotesPages) {
+            return add("exportNotesPages", exportNotesPages);
+        }
+
+        /**
+         * Specify, if the form field exportNotesPages is set to true, if only notes pages are exported to PDF.
+         */
+        public LibreOfficeOptions exportOnlyNotesPages(Boolean exportOnlyNotesPages) {
+            return add("exportOnlyNotesPages", exportOnlyNotesPages);
+        }
+
+        /**
+         * Specify if notes in margin are exported to PDF.
+         */
+        public LibreOfficeOptions exportNotesInMargin(Boolean exportNotesInMargin) {
+            return add("exportNotesInMargin", exportNotesInMargin);
+        }
+
+        /**
+         * Specify that the target documents with .od[tpqs] extension, will have that extension changed to .pdf when the link is exported to PDF.
+         * The source document remains untouched.
+         */
+        public LibreOfficeOptions convertOooTargetToPdfTarget(Boolean convertOooTargetToPdfTarget) {
+            return add("convertOooTargetToPdfTarget", convertOooTargetToPdfTarget);
+        }
+
+        /**
+         * Specify that the file system related hyperlinks (file:// protocol) present in the document will be exported as relative to the source document location.
+         */
+        public LibreOfficeOptions exportLinksRelativeFsys(Boolean exportLinksRelativeFsys) {
+            return add("exportLinksRelativeFsys", exportLinksRelativeFsys);
+        }
+
+        /**
+         * Export, for LibreOffice Impress, slides that are not included in slide shows.
+         */
+        public LibreOfficeOptions exportHiddenSlides(Boolean exportHiddenSlides) {
+            return add("exportHiddenSlides", exportHiddenSlides);
+        }
+
+        /**
+         * Specify that automatically inserted empty pages are suppressed. This option is active only if storing Writer documents.
+         */
+        public LibreOfficeOptions skipEmptyPages(Boolean skipEmptyPages) {
+            return add("skipEmptyPages", skipEmptyPages);
+        }
+
+        /**
+         * Specify that a stream is inserted to the PDF file which contains the original document for archiving purposes.
+         */
+        public LibreOfficeOptions addOriginalDocumentAsStream(Boolean addOriginalDocumentAsStream) {
+            return add("addOriginalDocumentAsStream", addOriginalDocumentAsStream);
+        }
+
+        /**
+         * Ignore each sheet's paper size, print ranges and shown/hidden status and puts every sheet (even hidden sheets) on exactly one page.
+         */
+        public LibreOfficeOptions singlePageSheets(Boolean singlePageSheets) {
+            return add("singlePageSheets", singlePageSheets);
+        }
+
+        /**
+         * Specify if images are exported to PDF using a lossless compression format like PNG or compressed using the JPEG format.
+         */
+        public LibreOfficeOptions losslessImageCompression(Boolean losslessImageCompression) {
+            return add("losslessImageCompression", losslessImageCompression);
+        }
+
+        /**
+         * Specify the quality of the JPG export. A higher value produces a higher-quality image and a larger file.
+         * Between 1 and 100.
+         */
+        public LibreOfficeOptions quality(Integer quality) {
+            return add("quality", quality);
+        }
+
+        /**
+         * Specify if the resolution of each image is reduced to the resolution specified by the form field maxImageResolution.
+         */
+        public LibreOfficeOptions reduceImageResolution(Boolean reduceImageResolution) {
+            return add("reduceImageResolution", reduceImageResolution);
+        }
+
+        /**
+         * If the form field reduceImageResolution is set to true, tell if all images will be reduced to the given value in DPI.
+         * Possible values are: 75, 150, 300, 600 and 1200.
+         */
+        public LibreOfficeOptions maxImageResolution(Integer maxImageResolution) {
+            return add("maxImageResolution", maxImageResolution);
+        }
+
+
+        /**
+         * If more than one file is provided, merge them into one PDF.
+         */
+        public LibreOfficeOptions merge(Boolean merge) {
+            return add("merge", merge);
+        }
+
+
+        public LibreOfficeOptions splitMode(String mode) {
+            return add("splitMode", mode);
+        }
+
+        public LibreOfficeOptions splitSpan(String span) {
+            return add("splitSpan", span);
+        }
+
+        public LibreOfficeOptions splitUnify(Boolean unify) {
+            return add("splitUnify", unify);
+        }
+
 
         /**
          * Convert the resulting PDF into the given PDF/A format.
@@ -690,18 +857,6 @@ public interface GotenbergClient {
                 form.add("embeds", embedFiles);
             }
             return this;
-        }
-
-        public LibreOfficeOptions splitMode(String mode) {
-            return add("splitMode", mode);
-        }
-
-        public LibreOfficeOptions splitSpan(String span) {
-            return add("splitSpan", span);
-        }
-
-        public LibreOfficeOptions splitUnify(Boolean unify) {
-            return add("splitUnify", unify);
         }
     }
 
