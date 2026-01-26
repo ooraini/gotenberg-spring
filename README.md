@@ -78,8 +78,7 @@ ResponseEntity<InputStream> response = client.convertUrl(
     GotenbergClient.chromiumConvertOptions()
         .landscape(true)
         .paperWidth(8.5)
-        .paperHeight(11.0),
-    null // Optional extra resources
+        .paperHeight(11.0)
 );
 ```
 
@@ -87,7 +86,7 @@ ResponseEntity<InputStream> response = client.convertUrl(
 The main file must be named `index.html`.
 ```java
 Resource indexHtml = new ClassPathResource("templates/index.html");
-ResponseEntity<InputStream> response = client.convertHtml(indexHtml, null, null);
+ResponseEntity<InputStream> response = client.convertHtml(indexHtml.getContentAsByteArray(), null);
 ```
 
 #### Take a Screenshot
@@ -105,19 +104,21 @@ ResponseEntity<InputStream> image = client.screenshotUrl(
 
 #### Merge Multiple PDFs
 ```java
-List<Resource> pdfs = List.of(
-    new FileSystemResource("report_part1.pdf"),
-    new FileSystemResource("report_part2.pdf")
-);
-ResponseEntity<InputStream> merged = client.merge(pdfs);
+GotenbergClient.PdfMergeOptions options = GotenbergClient.pdfMergeOptions()
+    .file(new FileSystemResource("report_part1.pdf"))
+    .file(new FileSystemResource("report_part2.pdf"));
+ResponseEntity<InputStream> merged = client.pdfMerge(options);
 ```
 
 #### Office to PDF Conversion
 Requires Gotenberg with LibreOffice enabled.
 ```java
 ResponseEntity<InputStream> pdf = client.convertLibreOffice(
-    List.of(new FileSystemResource("resume.docx")),
-    LibreOfficeOptions.of().pdfa(PdfAFormat.A1B)
+    GotenbergClient.libreOfficeOptions()
+        .file(new FileSystemResource("resume.docx"))
+        .pdfa(PdfAFormat.A1B)
+        .exportBookmarks(true)
+        .exportNotes(false)
 );
 ```
 
