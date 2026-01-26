@@ -32,15 +32,15 @@ public interface GotenbergClient {
     }
 
     default ResponseEntity<InputStream> convertHtml(byte[] indexHtml, @Nullable ChromiumConvertOptions options) {
-        return convertHtml(new ChromiumConvertOptions(options).addFile("index.html", indexHtml).form);
+        return convertHtml(new ChromiumConvertOptions(options).file("index.html", indexHtml).parts);
     }
 
     default ResponseEntity<InputStream> convertUrl(String url, @Nullable ChromiumConvertOptions options) {
-        return convertUrl(new ChromiumConvertOptions(options).add("url", url).form);
+        return convertUrl(new ChromiumConvertOptions(options).add("url", url).parts);
     }
 
     default ResponseEntity<InputStream> convertMarkdown(ChromiumConvertOptions options) {
-        return convertMarkdown(options.form);
+        return convertMarkdown(options.parts);
     }
 
     @PostExchange(url = "/forms/chromium/convert/html", contentType = MULTIPART_FORM_DATA_VALUE)
@@ -65,15 +65,15 @@ public interface GotenbergClient {
     }
 
     default ResponseEntity<InputStream> screenshotHtml(byte[] indexHtml, @Nullable ChromiumScreenshotOptions options) {
-        return screenshotHtml(new ChromiumScreenshotOptions(options).addFile("index.html", indexHtml).form);
+        return screenshotHtml(new ChromiumScreenshotOptions(options).file("index.html", indexHtml).parts);
     }
 
     default ResponseEntity<InputStream> screenshotUrl(String url, @Nullable ChromiumScreenshotOptions options) {
-        return screenshotUrl(new ChromiumScreenshotOptions(options).add("url", url).form);
+        return screenshotUrl(new ChromiumScreenshotOptions(options).add("url", url).parts);
     }
 
     default ResponseEntity<InputStream> screenshotMarkdown(ChromiumScreenshotOptions options) {
-        return screenshotMarkdown(options.form);
+        return screenshotMarkdown(options.parts);
     }
 
     @PostExchange(url = "/forms/chromium/screenshot/url", contentType = MULTIPART_FORM_DATA_VALUE, accept = {IMAGE_PNG_VALUE, IMAGE_JPEG_VALUE, "image/webp"})
@@ -90,11 +90,11 @@ public interface GotenbergClient {
     //region Libre Office Convert
 
     static LibreOfficeOptions libreOfficeOptions() {
-        return new LibreOfficeOptions();
+        return new LibreOfficeOptions(null);
     }
 
     default ResponseEntity<InputStream> convertLibreOffice(LibreOfficeOptions options) {
-        return convertLibreOffice(options.form);
+        return convertLibreOffice(options.parts);
     }
 
     @PostExchange(url = "/forms/libreoffice/convert", contentType = MULTIPART_FORM_DATA_VALUE)
@@ -108,7 +108,7 @@ public interface GotenbergClient {
     }
 
     default ResponseEntity<InputStream> pdfMerge(PdfMergeOptions options) {
-        return pdfMerge(options.form);
+        return pdfMerge(options.parts);
     }
 
     @PostExchange(url = "/forms/pdfengines/merge", contentType = MULTIPART_FORM_DATA_VALUE)
@@ -180,36 +180,58 @@ public interface GotenbergClient {
     }
 
 
-    interface Options<O extends Options<O>> {
-        O add(String key, Object value);
+    abstract class Options<O extends Options<O>> {
+        final LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+        final LinkedMultiValueMap<String, Object> headers = new LinkedMultiValueMap<>();
 
-        default O addFile(String filename, String content) {
-            return addFile(filename, content.getBytes(StandardCharsets.UTF_8));
+        public Options(@Nullable O copy) {
+            if (copy != null) parts.putAll(copy.parts);
         }
 
-        default O addFile(String filename, byte[] content) {
+        public O add(String key, Object value) {
+            parts.add(key, value);
+            //noinspection unchecked
+            return (O) this;
+        }
+
+        public O file(String filename, String content) {
+            return file(filename, content.getBytes(StandardCharsets.UTF_8));
+        }
+
+        public O file(String filename, byte[] content) {
             return add("files", new ByteArrayResource(content, filename));
         }
 
-        default O addFile(String filename, InputStream content) {
+        public O file(String filename, InputStream content) {
             return add("files", new InputStreamResource(content, filename));
         }
 
-        default O addFile(Resource resource) {
+        public O file(Resource resource) {
             return add("files", resource);
+        }
+
+
+        public O embed(String filename, String content) {
+            return file(filename, content.getBytes(StandardCharsets.UTF_8));
+        }
+
+        public O embed(String filename, byte[] content) {
+            return add("embeds", new ByteArrayResource(content, filename));
+        }
+
+        public O embed(String filename, InputStream content) {
+            return add("embeds", new InputStreamResource(content, filename));
+        }
+
+        public O embed(Resource resource) {
+            return add("embeds", resource);
         }
     }
 
-    class ChromiumScreenshotOptions implements Options<ChromiumScreenshotOptions> {
-        final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+    class ChromiumScreenshotOptions extends Options<ChromiumScreenshotOptions> {
 
         ChromiumScreenshotOptions(@Nullable ChromiumScreenshotOptions copy) {
-            if (copy != null) form.putAll(copy.form);
-        }
-
-        public ChromiumScreenshotOptions add(String key, Object value) {
-            form.add(key, value);
-            return this;
+            super(copy);
         }
 
         /**
@@ -345,16 +367,9 @@ public interface GotenbergClient {
      * This class provides a chainable API to configure various parameters such as page dimensions, margins,
      * rendering options, metadata, page ranges, and security settings.
      */
-    class ChromiumConvertOptions implements Options<ChromiumConvertOptions> {
-        final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-
+    class ChromiumConvertOptions extends Options<ChromiumConvertOptions> {
         public ChromiumConvertOptions(@Nullable ChromiumConvertOptions copy) {
-            if (copy != null) form.putAll(copy.form);
-        }
-
-        public ChromiumConvertOptions add(String key, Object value) {
-            form.add(key, value);
-            return this;
+            super(copy);
         }
 
         /**
@@ -551,7 +566,7 @@ public interface GotenbergClient {
          */
         public ChromiumConvertOptions embedFiles(List<Resource> embedFiles) {
             if (embedFiles != null) {
-                form.addAll("embeds", embedFiles);
+                parts.addAll("embeds", embedFiles);
             }
             return this;
         }
@@ -613,13 +628,9 @@ public interface GotenbergClient {
         }
     }
 
-    class LibreOfficeOptions implements Options<LibreOfficeOptions> {
-        final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-
-        @Override
-        public LibreOfficeOptions add(String key, Object value) {
-            form.add(key, value);
-            return this;
+    class LibreOfficeOptions extends Options<LibreOfficeOptions> {
+        public LibreOfficeOptions(@Nullable LibreOfficeOptions copy) {
+            super(copy);
         }
 
         /**
@@ -854,23 +865,15 @@ public interface GotenbergClient {
 
         public LibreOfficeOptions embeds(List<Resource> embedFiles) {
             if (embedFiles != null) {
-                form.add("embeds", embedFiles);
+                parts.add("embeds", embedFiles);
             }
             return this;
         }
     }
 
-    class PdfMergeOptions implements Options<PdfMergeOptions> {
-        final LinkedMultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
-
+    class PdfMergeOptions extends Options<PdfMergeOptions> {
         PdfMergeOptions(@Nullable PdfMergeOptions copy) {
-            if (copy != null) form.putAll(copy.form);
-        }
-
-        @Override
-        public PdfMergeOptions add(String key, Object value) {
-            form.add(key, value);
-            return this;
+            super(copy);
         }
 
         /**
