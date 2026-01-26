@@ -115,8 +115,16 @@ public interface GotenbergClient {
     ResponseEntity<InputStream> pdfMerge(@RequestPart MultiValueMap<String, Object> body);
     //endregion
 
+    //region PDF Convert
+    static PdfConvertOptions pdfConvertOptions() {
+        return new PdfConvertOptions(null);
+    }
+    default ResponseEntity<InputStream> pdfConvert(PdfConvertOptions options) {
+        return pdfConvert(options.parts);
+    }
     @PostExchange(url = "/forms/pdfengines/convert", contentType = MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<InputStream> convertPdf(@RequestPart MultiValueMap<String, Object> body);
+    ResponseEntity<InputStream> pdfConvert(@RequestPart MultiValueMap<String, Object> body);
+    //endregion
 
     @PostExchange(url = "/forms/pdfengines/metadata", contentType = MULTIPART_FORM_DATA_VALUE, accept = APPLICATION_JSON_VALUE)
     ResponseEntity<String> getMetadata(@RequestPart MultiValueMap<String, Object> body);
@@ -917,6 +925,27 @@ public interface GotenbergClient {
         public PdfMergeOptions ownerPassword(String ownerPassword) {
             return add("ownerPassword", ownerPassword);
         }
+    }
+
+    class PdfConvertOptions extends Options<PdfConvertOptions> {
+        PdfConvertOptions(@Nullable PdfConvertOptions copy) {
+            super(copy);
+        }
+
+        /**
+         * Convert the resulting PDF into the given PDF/A format.
+         */
+        public PdfConvertOptions pdfa(PdfAFormat pdfa) {
+            return add("pdfa", pdfa.getValue());
+        }
+
+        /**
+         * Enable PDF for Universal Access for optimal accessibility.
+         */
+        public PdfConvertOptions pdfua(Boolean pdfua) {
+            return add("pdfua", pdfua);
+        }
+
     }
     //endregion
 }
