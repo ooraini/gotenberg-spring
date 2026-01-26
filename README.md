@@ -18,7 +18,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>io.github.ooraini</groupId>    
     <artifactId>gotenberg-spring</artifactId>
-    <version>0.3</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
@@ -26,7 +26,7 @@ Add the following dependency to your `pom.xml`:
 Add the dependency to your `build.gradle.kts`:
 
 ```kotlin
-implementation("io.github.ooraini:gotenberg-spring:0.3")
+implementation("io.github.ooraini:gotenberg-spring:0.4.0")
 ```
 
 ## Usage
