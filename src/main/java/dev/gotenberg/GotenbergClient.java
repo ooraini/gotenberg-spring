@@ -13,6 +13,7 @@ import org.springframework.web.service.annotation.PostExchange;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.*;
 
@@ -126,8 +127,27 @@ public interface GotenbergClient {
     ResponseEntity<InputStream> pdfConvert(@RequestPart MultiValueMap<String, Object> body);
     //endregion
 
-    @PostExchange(url = "/forms/pdfengines/metadata", contentType = MULTIPART_FORM_DATA_VALUE, accept = APPLICATION_JSON_VALUE)
-    ResponseEntity<String> getMetadata(@RequestPart MultiValueMap<String, Object> body);
+    //region PDF Read Metadata
+    static PdfReadMetadataOptions readMetadataOptions() {
+        return new PdfReadMetadataOptions(null);
+    }
+    default ResponseEntity<Map<String, Map<String, Object>>> readMetadata(PdfReadMetadataOptions options) {
+        return readMetadata(options.parts);
+    }
+    @PostExchange(url = "/forms/pdfengines/metadata/read", contentType = MULTIPART_FORM_DATA_VALUE, accept = APPLICATION_JSON_VALUE)
+    ResponseEntity<Map<String, Map<String, Object>>> readMetadata(@RequestPart MultiValueMap<String, Object> body);
+    //endregion
+
+    //region PDF Write Metadata
+    static PdfWriteMetadataOptions writeMetadataOptions() {
+        return new PdfWriteMetadataOptions(null);
+    }
+    default ResponseEntity<InputStream> writeMetadata(PdfWriteMetadataOptions options) {
+        return writeMetadata(options.parts);
+    }
+    @PostExchange(url = "/forms/pdfengines/metadata/write", contentType = MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<InputStream> writeMetadata(@RequestPart MultiValueMap<String, Object> body);
+    //endregion
 
 
     //region Models
@@ -947,5 +967,27 @@ public interface GotenbergClient {
         }
 
     }
+
+    class PdfReadMetadataOptions extends Options<PdfReadMetadataOptions> {
+        public PdfReadMetadataOptions(@Nullable PdfReadMetadataOptions copy) {
+            super(copy);
+        }
+    }
+
+    class PdfWriteMetadataOptions extends Options<PdfWriteMetadataOptions> {
+        private final LinkedMultiValueMap<String, Object> metadata;
+        public PdfWriteMetadataOptions(@Nullable PdfWriteMetadataOptions copy) {
+            super(copy);
+            metadata = new LinkedMultiValueMap<>();
+            add("metadata", metadata);
+        }
+
+        public PdfWriteMetadataOptions metadata(String key, Object value) {
+            if (value instanceof List<?> list) metadata.addAll(key, list);
+            else metadata.add(key, value);
+            return this;
+        }
+    }
+
     //endregion
 }

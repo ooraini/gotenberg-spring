@@ -26,6 +26,7 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-autoconfigure")
     compileOnly("org.springframework.boot:spring-boot-docker-compose")
     compileOnly("org.springframework.boot:spring-boot-starter-restclient")
+    compileOnly("com.fasterxml.jackson.core:jackson-annotations")
 
     annotationProcessor("org.springframework.boot:spring-boot-autoconfigure-processor")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
