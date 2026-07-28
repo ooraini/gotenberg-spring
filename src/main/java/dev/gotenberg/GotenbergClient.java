@@ -452,8 +452,8 @@ public interface GotenbergClient {
         /**
          * Define whether to prefer page size as defined by CSS.
          */
-        public ChromiumConvertOptions preferCSSPageSize(Boolean preferCSSPageSize) {
-            return add("preferCSSPageSize", preferCSSPageSize);
+        public ChromiumConvertOptions preferCssPageSize(Boolean preferCssPageSize) {
+            return add("preferCssPageSize", preferCssPageSize);
         }
 
         /**
